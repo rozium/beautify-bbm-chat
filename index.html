@@ -3,32 +3,35 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BBM Chat Viewer</title>
+    <title>BBM Backup Chat Viewer</title>
     <style>
         :root {
-            --bbm-blue: #1677d2;
-            --bbm-dark: #1f2933;
-            --bbm-green: #b7e66a;
-            --bbm-bg: #d8dde3;
-            --bbm-panel: #f7f9fb;
-            --bbm-muted: #687586;
-            --bbm-border: #c8d0da;
-            --bbm-card: rgba(255, 255, 255, 0.82);
-            --bbm-phone: #eef3f7;
-            --bbm-chat-overlay: rgba(255, 255, 255, 0.48);
+            --bbm-blue: #175cd3;
+            --bbm-dark: #172033;
+            --bbm-green: #d9f99d;
+            --bbm-bg: #f4f1ea;
+            --bbm-panel: #fffdf7;
+            --bbm-muted: #6b7280;
+            --bbm-border: #d8d2c4;
+            --bbm-card: #fffaf0;
+            --bbm-phone: #f7f2e8;
+            --bbm-chat-overlay: rgba(255, 250, 240, 0.7);
+            --bbm-shadow: 0 18px 42px rgba(23, 32, 51, 0.1);
+            --bbm-radius: 18px;
         }
 
         body.theme-classic {
-            --bbm-blue: #0b75bd;
-            --bbm-dark: #e7eef6;
-            --bbm-green: #9bd84b;
-            --bbm-bg: #101820;
-            --bbm-panel: #1d2b38;
-            --bbm-muted: #94a7b8;
-            --bbm-border: #314151;
-            --bbm-card: rgba(20, 31, 42, 0.9);
-            --bbm-phone: #141e28;
-            --bbm-chat-overlay: rgba(13, 21, 30, 0.58);
+            --bbm-blue: #5aa2ff;
+            --bbm-dark: #f2f7ff;
+            --bbm-green: #a3e635;
+            --bbm-bg: #0f172a;
+            --bbm-panel: #111827;
+            --bbm-muted: #9ca3af;
+            --bbm-border: #273449;
+            --bbm-card: #121b2b;
+            --bbm-phone: #0b1120;
+            --bbm-chat-overlay: rgba(15, 23, 42, 0.78);
+            --bbm-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
         }
 
         * {
@@ -40,64 +43,72 @@
             min-height: 100vh;
             color: var(--bbm-dark);
             background:
-                radial-gradient(circle at top left, rgba(22, 119, 210, 0.18), transparent 28rem),
-                linear-gradient(135deg, #edf2f7 0%, #c8d2dd 100%);
-            font-family: Arial, Helvetica, sans-serif;
+                linear-gradient(rgba(23, 32, 51, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(23, 32, 51, 0.035) 1px, transparent 1px),
+                radial-gradient(circle at 16% 0%, rgba(23, 92, 211, 0.12), transparent 30rem),
+                var(--bbm-bg);
+            background-size: 28px 28px, 28px 28px, auto, auto;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         .page {
-            width: min(1180px, calc(100% - 32px));
+            width: min(1240px, calc(100% - 32px));
             margin: 0 auto;
-            padding: 28px 0;
+            padding: 24px 0 32px;
         }
 
         .hero {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 20px;
+            grid-template-columns: minmax(0, 1fr) 360px;
+            gap: 16px;
             align-items: stretch;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .card {
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 22px;
+            border: 1px solid var(--bbm-border);
+            border-radius: var(--bbm-radius);
             background: var(--bbm-card);
-            box-shadow: 0 24px 60px rgba(31, 41, 51, 0.16);
-            backdrop-filter: blur(12px);
+            box-shadow: var(--bbm-shadow);
         }
 
         .intro {
-            padding: 28px;
+            position: relative;
+            overflow: hidden;
+            padding: 26px 30px;
+            border-left: 6px solid var(--bbm-blue);
         }
 
         .eyebrow {
             margin: 0 0 8px;
             color: var(--bbm-blue);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
         }
 
         h1 {
             margin: 0 0 12px;
-            font-size: clamp(32px, 5vw, 56px);
-            line-height: 1;
+            max-width: 760px;
+            font-size: clamp(32px, 4.6vw, 58px);
+            line-height: 0.95;
+            letter-spacing: -0.055em;
         }
 
         .intro p {
             max-width: 680px;
             margin: 0;
             color: var(--bbm-muted);
-            font-size: 16px;
+            font-size: 17px;
             line-height: 1.6;
         }
 
         .controls {
             display: grid;
-            gap: 14px;
-            padding: 20px;
+            align-content: start;
+            gap: 12px;
+            padding: 18px;
         }
 
         .control-group {
@@ -106,9 +117,11 @@
         }
 
         label {
-            color: #3f4b5c;
-            font-size: 13px;
+            color: var(--bbm-muted);
+            font-size: 12px;
             font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         body.theme-classic label {
@@ -120,15 +133,15 @@
         button {
             width: 100%;
             border: 1px solid var(--bbm-border);
-            border-radius: 12px;
-            background: #fff;
+            border-radius: 10px;
+            background: #fffefb;
             color: var(--bbm-dark);
             font: inherit;
         }
 
         input,
         select {
-            padding: 12px;
+            padding: 11px 12px;
         }
 
         body.theme-classic input,
@@ -149,10 +162,10 @@
         }
 
         button {
-            padding: 12px 14px;
+            padding: 11px 14px;
             cursor: pointer;
             font-weight: 700;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
         }
 
         .button-row {
@@ -161,20 +174,46 @@
             gap: 8px;
         }
 
+        .action-row {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
         button:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 24px rgba(31, 41, 51, 0.12);
+            border-color: rgba(23, 92, 211, 0.42);
+            box-shadow: 0 10px 22px rgba(23, 32, 51, 0.1);
         }
 
         .sample-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 8px;
         }
 
         .sample-grid button {
             padding: 10px 8px;
             color: var(--bbm-blue);
+        }
+
+        .icon-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: auto;
+            min-width: 44px;
+            padding: 10px 12px;
+        }
+
+        .icon-button .icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .icon-button .label {
+            font-size: 13px;
         }
 
         .primary {
@@ -185,36 +224,45 @@
 
         .workspace {
             display: grid;
-            grid-template-columns: 330px minmax(0, 1fr);
-            gap: 20px;
+            grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+            gap: 16px;
+            align-items: start;
         }
 
         .sidebar {
             overflow: hidden;
+            position: sticky;
+            top: 16px;
         }
 
         .phone {
             overflow: hidden;
-            min-height: 720px;
+            min-height: 760px;
             background: var(--bbm-phone);
         }
 
         .bbm-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 16px 18px;
-            background: linear-gradient(#252f3b, #151b22);
-            color: #fff;
+            gap: 14px;
+            padding: 16px;
+            border-bottom: 1px solid var(--bbm-border);
+            background:
+                linear-gradient(135deg, rgba(23, 92, 211, 0.08), transparent 48%),
+                var(--bbm-panel);
+            color: var(--bbm-dark);
         }
 
         .bbm-logo {
             display: grid;
             place-items: center;
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: var(--bbm-blue);
+            flex: 0 0 auto;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(23, 92, 211, 0.22);
+            background: rgba(23, 92, 211, 0.1);
+            color: var(--bbm-blue);
             font-weight: 800;
             letter-spacing: -0.08em;
         }
@@ -232,23 +280,37 @@
         }
 
         .bbm-title span {
-            color: #aeb9c5;
+            color: var(--bbm-muted);
             font-size: 13px;
+        }
+
+        body.theme-classic .bbm-header {
+            background:
+                linear-gradient(135deg, rgba(90, 162, 255, 0.12), transparent 48%),
+                var(--bbm-panel);
+            color: var(--bbm-dark);
+        }
+
+        body.theme-classic .bbm-logo {
+            border-color: rgba(90, 162, 255, 0.28);
+            background: rgba(90, 162, 255, 0.14);
+            color: var(--bbm-blue);
         }
 
         .stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding: 16px;
+            gap: 8px;
+            padding: 12px;
             border-bottom: 1px solid var(--bbm-border);
             background: var(--bbm-panel);
         }
 
         .stat {
-            padding: 12px;
-            border-radius: 14px;
-            background: #fff;
+            padding: 10px;
+            border: 1px solid var(--bbm-border);
+            border-radius: 12px;
+            background: #fffefb;
         }
 
         body.theme-classic .stat {
@@ -257,7 +319,7 @@
 
         .stat strong {
             display: block;
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .stat span {
@@ -266,13 +328,13 @@
         }
 
         .contact-list {
-            max-height: 520px;
+            max-height: 470px;
             overflow: auto;
             padding: 10px;
         }
 
         .daily-chart {
-            padding: 14px 16px;
+            padding: 12px;
             border-bottom: 1px solid var(--bbm-border);
             background: var(--bbm-panel);
         }
@@ -300,7 +362,7 @@
             grid-auto-columns: minmax(8px, 1fr);
             align-items: end;
             gap: 3px;
-            height: 110px;
+            height: 86px;
             overflow-x: auto;
             padding-bottom: 4px;
         }
@@ -309,8 +371,8 @@
             display: block;
             min-width: 8px;
             border: 0;
-            border-radius: 6px 6px 2px 2px;
-            background: linear-gradient(180deg, var(--bbm-blue), #0f5f9f);
+            border-radius: 999px 999px 3px 3px;
+            background: var(--bbm-blue);
             box-shadow: none;
             transform: none;
             padding: 0;
@@ -322,7 +384,7 @@
         }
 
         .daily-bar.active {
-            background: linear-gradient(180deg, #f5b942, #e17b21);
+            background: #f97316;
         }
 
         .daily-empty {
@@ -339,7 +401,7 @@
             margin-bottom: 8px;
             padding: 10px;
             border: 1px solid transparent;
-            border-radius: 14px;
+            border-radius: 12px;
             background: transparent;
             text-align: left;
         }
@@ -349,8 +411,8 @@
         }
 
         .contact-card.active {
-            border-color: rgba(22, 119, 210, 0.3);
-            background: #e8f3ff;
+            border-color: rgba(23, 92, 211, 0.32);
+            background: rgba(23, 92, 211, 0.08);
         }
 
         body.theme-classic .contact-card.active {
@@ -362,9 +424,9 @@
             place-items: center;
             width: 38px;
             height: 38px;
-            border-radius: 12px;
-            background: #d3e5f8;
-            color: #155f9f;
+            border-radius: 50%;
+            background: #e0e7ff;
+            color: #1d4ed8;
             font-weight: 800;
         }
 
@@ -396,26 +458,29 @@
 
         .chat-toolbar {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 180px 132px;
-            gap: 12px;
-            padding: 14px;
+            grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) 140px;
+            gap: 10px;
+            padding: 12px;
             border-bottom: 1px solid var(--bbm-border);
             background: var(--bbm-panel);
         }
 
         .chat-shell {
-            height: 626px;
+            height: 694px;
             overflow: auto;
-            padding: 18px;
+            padding: 24px clamp(16px, 3vw, 34px);
             background:
                 linear-gradient(var(--bbm-chat-overlay), var(--bbm-chat-overlay)),
-                repeating-linear-gradient(135deg, #dbe2ea 0, #dbe2ea 14px, #d1d9e2 14px, #d1d9e2 28px);
+                linear-gradient(rgba(23, 32, 51, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(23, 32, 51, 0.045) 1px, transparent 1px),
+                var(--bbm-phone);
+            background-size: auto, 22px 22px, 22px 22px, auto;
         }
 
         .empty {
             display: grid;
             place-items: center;
-            min-height: 460px;
+            min-height: 540px;
             color: var(--bbm-muted);
             text-align: center;
         }
@@ -425,14 +490,21 @@
             margin: 18px auto;
             padding: 6px 12px;
             border-radius: 999px;
-            background: rgba(31, 41, 51, 0.55);
-            color: #fff;
+            border: 1px solid var(--bbm-border);
+            background: var(--bbm-panel);
+            color: var(--bbm-muted);
             font-size: 12px;
+        }
+
+        body.theme-classic .day-divider {
+            border-color: #334155;
+            background: #111827;
+            color: #cbd5e1;
         }
 
         .message {
             display: flex;
-            margin: 4px 0;
+            margin: 5px 0;
         }
 
         .message.outgoing {
@@ -440,24 +512,38 @@
         }
 
         .message.group-start {
-            margin-top: 12px;
+            margin-top: 14px;
         }
 
         .bubble {
             position: relative;
-            max-width: min(74%, 680px);
-            padding: 8px 12px 6px;
-            border-radius: 8px 16px 16px 8px;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(31, 41, 51, 0.12);
-            line-height: 1.42;
+            max-width: min(78%, 760px);
+            padding: 10px 13px 8px;
+            border: 1px solid var(--bbm-border);
+            border-radius: 6px 16px 16px 6px;
+            background: #fffefb;
+            box-shadow: 0 3px 10px rgba(23, 32, 51, 0.08);
+            line-height: 1.48;
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
 
+        body.theme-classic .bubble {
+            border-color: #334155;
+            background: #182235;
+            color: #f8fafc;
+        }
+
         .outgoing .bubble {
-            border-radius: 16px 8px 8px 16px;
+            border-color: #bad48a;
+            border-radius: 16px 6px 6px 16px;
             background: var(--bbm-green);
+        }
+
+        body.theme-classic .outgoing .bubble {
+            border-color: #84cc16;
+            background: #365314;
+            color: #f7fee7;
         }
 
         .group-start .bubble {
@@ -475,9 +561,13 @@
 
         .sender {
             margin-bottom: 4px;
-            color: #315d89;
+            color: var(--bbm-blue);
             font-size: 12px;
             font-weight: 700;
+        }
+
+        body.theme-classic .sender {
+            color: #93c5fd;
         }
 
         .time {
@@ -485,6 +575,10 @@
             color: rgba(31, 41, 51, 0.58);
             font-size: 11px;
             text-align: right;
+        }
+
+        body.theme-classic .time {
+            color: #cbd5e1;
         }
 
         .notice {
@@ -513,6 +607,14 @@
 
             .chat-toolbar {
                 grid-template-columns: 1fr;
+            }
+
+            .action-row {
+                justify-content: stretch;
+            }
+
+            .icon-button {
+                flex: 1;
             }
 
             .chat-shell {
@@ -573,7 +675,7 @@
         <section class="hero">
             <div class="card intro">
                 <p class="eyebrow">BlackBerry Messenger Backup Reader</p>
-                <h1>Beautify BBM Chat</h1>
+                <h1>BBM Backup Chat Viewer</h1>
                 <p>
                     Load an exported BBM CSV backup and view it as a messenger-style conversation.
                     The parser expects rows like timestamp, sender PIN, receiver PIN, and message text.
@@ -591,14 +693,21 @@
                     <div class="sample-grid" id="sampleButtons"></div>
                 </div>
 
-                <div class="button-row">
-                    <button class="primary" type="button" id="loadAllExamples">Load all examples</button>
-                    <button type="button" id="clearChat">Clear chat</button>
-                </div>
+                <button class="primary" type="button" id="loadAllExamples">Load all examples</button>
 
-                <div class="button-row">
-                    <button type="button" id="exportPdf">Export PDF</button>
-                    <button type="button" id="exportMarkdown">Export Markdown</button>
+                <div class="action-row" aria-label="Chat actions">
+                    <button class="icon-button" type="button" id="exportPdf" title="Export PDF" aria-label="Export PDF">
+                        <span class="icon" aria-hidden="true">⤓</span>
+                        <span class="label">PDF</span>
+                    </button>
+                    <button class="icon-button" type="button" id="exportMarkdown" title="Export Markdown" aria-label="Export Markdown">
+                        <span class="icon" aria-hidden="true">✎</span>
+                        <span class="label">MD</span>
+                    </button>
+                    <button class="icon-button" type="button" id="clearChat" title="Clear chat" aria-label="Clear chat">
+                        <span class="icon" aria-hidden="true">×</span>
+                        <span class="label">Clear</span>
+                    </button>
                 </div>
 
                 <p class="notice" id="notice"></p>
@@ -681,6 +790,8 @@
             editingPin: "",
             theme: loadTheme()
         };
+
+        const exampleFiles = ["7516465E.csv"];
 
         const elements = {
             fileInput: document.getElementById("fileInput"),
@@ -1478,13 +1589,14 @@
             loadCsvText(chunks.join("\n"), fileList.map((file) => file.name).join(", "));
         }
 
-        async function loadExample(number) {
+        async function loadExample(fileName) {
             try {
-                const response = await fetch(`examples/${number}.csv`);
+                const sourceName = `examples/${fileName}`;
+                const response = await fetch(sourceName);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
                 }
-                loadCsvText(await response.text(), `examples/${number}.csv`);
+                loadCsvText(await response.text(), sourceName);
             } catch (error) {
                 showNotice("Example files cannot be loaded from this browser context. Upload the CSV manually or serve this folder with a local web server.");
             }
@@ -1493,8 +1605,8 @@
         async function loadAllExamples() {
             try {
                 const sources = await Promise.all(
-                    [1, 2, 3, 4, 5].map(async (number) => {
-                        const sourceName = `examples/${number}.csv`;
+                    exampleFiles.map(async (fileName) => {
+                        const sourceName = `examples/${fileName}`;
                         const response = await fetch(sourceName);
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}`);
@@ -1513,13 +1625,13 @@
             }
         }
 
-        for (let index = 1; index <= 5; index += 1) {
+        exampleFiles.forEach((fileName) => {
             const button = document.createElement("button");
             button.type = "button";
-            button.textContent = `${index}.csv`;
-            button.addEventListener("click", () => loadExample(index));
+            button.textContent = fileName;
+            button.addEventListener("click", () => loadExample(fileName));
             elements.sampleButtons.append(button);
-        }
+        });
 
         elements.fileInput.addEventListener("change", (event) => readFiles(event.target.files));
         elements.loadAllExamples.addEventListener("click", loadAllExamples);
