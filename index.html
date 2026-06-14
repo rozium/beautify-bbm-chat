@@ -1,61 +1,1542 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BBM Chat Viewer</title>
     <style>
-        .row .col {
-            min-height: 100px;
+        :root {
+            --bbm-blue: #1677d2;
+            --bbm-dark: #1f2933;
+            --bbm-green: #b7e66a;
+            --bbm-bg: #d8dde3;
+            --bbm-panel: #f7f9fb;
+            --bbm-muted: #687586;
+            --bbm-border: #c8d0da;
+            --bbm-card: rgba(255, 255, 255, 0.82);
+            --bbm-phone: #eef3f7;
+            --bbm-chat-overlay: rgba(255, 255, 255, 0.48);
         }
 
-        .myimg {
-            object-fit: cover;
+        body.theme-classic {
+            --bbm-blue: #0b75bd;
+            --bbm-dark: #e7eef6;
+            --bbm-green: #9bd84b;
+            --bbm-bg: #101820;
+            --bbm-panel: #1d2b38;
+            --bbm-muted: #94a7b8;
+            --bbm-border: #314151;
+            --bbm-card: rgba(20, 31, 42, 0.9);
+            --bbm-phone: #141e28;
+            --bbm-chat-overlay: rgba(13, 21, 30, 0.58);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--bbm-dark);
+            background:
+                radial-gradient(circle at top left, rgba(22, 119, 210, 0.18), transparent 28rem),
+                linear-gradient(135deg, #edf2f7 0%, #c8d2dd 100%);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .page {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 20px;
+            align-items: stretch;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 22px;
+            background: var(--bbm-card);
+            box-shadow: 0 24px 60px rgba(31, 41, 51, 0.16);
+            backdrop-filter: blur(12px);
+        }
+
+        .intro {
+            padding: 28px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: var(--bbm-blue);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 1;
+        }
+
+        .intro p {
+            max-width: 680px;
+            margin: 0;
+            color: var(--bbm-muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .controls {
+            display: grid;
+            gap: 14px;
+            padding: 20px;
+        }
+
+        .control-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            color: #3f4b5c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        body.theme-classic label {
+            color: #c4d3e0;
+        }
+
+        input,
+        select,
+        button {
             width: 100%;
-            height: 300px;
+            border: 1px solid var(--bbm-border);
+            border-radius: 12px;
+            background: #fff;
+            color: var(--bbm-dark);
+            font: inherit;
+        }
+
+        input,
+        select {
+            padding: 12px;
+        }
+
+        body.theme-classic input,
+        body.theme-classic select,
+        body.theme-classic button {
+            background: #0f1822;
+            color: #e7eef6;
+            border-color: #314151;
+        }
+
+        body.theme-classic .primary {
+            background: var(--bbm-blue);
+            border-color: var(--bbm-blue);
+        }
+
+        input[type="file"] {
+            cursor: pointer;
+        }
+
+        button {
+            padding: 12px 14px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(31, 41, 51, 0.12);
+        }
+
+        .sample-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .sample-grid button {
+            padding: 10px 8px;
+            color: var(--bbm-blue);
+        }
+
+        .primary {
+            border-color: var(--bbm-blue);
+            background: var(--bbm-blue);
+            color: #fff;
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 330px minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        .sidebar {
+            overflow: hidden;
+        }
+
+        .phone {
+            overflow: hidden;
+            min-height: 720px;
+            background: var(--bbm-phone);
+        }
+
+        .bbm-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            background: linear-gradient(#252f3b, #151b22);
+            color: #fff;
+        }
+
+        .bbm-logo {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--bbm-blue);
+            font-weight: 800;
+            letter-spacing: -0.08em;
+        }
+
+        .bbm-title {
+            min-width: 0;
+        }
+
+        .bbm-title strong,
+        .contact-card strong {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bbm-title span {
+            color: #aeb9c5;
+            font-size: 13px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 16px;
+            border-bottom: 1px solid var(--bbm-border);
+            background: var(--bbm-panel);
+        }
+
+        .stat {
+            padding: 12px;
+            border-radius: 14px;
+            background: #fff;
+        }
+
+        body.theme-classic .stat {
+            background: #111c27;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 22px;
+        }
+
+        .stat span {
+            color: var(--bbm-muted);
+            font-size: 12px;
+        }
+
+        .contact-list {
+            max-height: 520px;
+            overflow: auto;
+            padding: 10px;
+        }
+
+        .daily-chart {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--bbm-border);
+            background: var(--bbm-panel);
+        }
+
+        .daily-chart-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .daily-chart-header strong {
+            font-size: 14px;
+        }
+
+        .daily-chart-header span {
+            color: var(--bbm-muted);
+            font-size: 12px;
+        }
+
+        .daily-bars {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(8px, 1fr);
+            align-items: end;
+            gap: 3px;
+            height: 110px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .daily-bar {
+            display: block;
+            min-width: 8px;
+            border: 0;
+            border-radius: 6px 6px 2px 2px;
+            background: linear-gradient(180deg, var(--bbm-blue), #0f5f9f);
+            box-shadow: none;
+            transform: none;
+            padding: 0;
+        }
+
+        .daily-bar:hover {
+            transform: none;
+            box-shadow: 0 0 0 2px rgba(22, 119, 210, 0.18);
+        }
+
+        .daily-bar.active {
+            background: linear-gradient(180deg, #f5b942, #e17b21);
+        }
+
+        .daily-empty {
+            color: var(--bbm-muted);
+            font-size: 13px;
+        }
+
+        .contact-card {
+            display: grid;
+            grid-template-columns: 38px 1fr;
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 8px;
+            padding: 10px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            background: transparent;
+            text-align: left;
+        }
+
+        .contact-card.editing {
+            grid-template-columns: 38px 1fr;
+        }
+
+        .contact-card.active {
+            border-color: rgba(22, 119, 210, 0.3);
+            background: #e8f3ff;
+        }
+
+        body.theme-classic .contact-card.active {
+            background: #132f47;
+        }
+
+        .avatar {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: #d3e5f8;
+            color: #155f9f;
+            font-weight: 800;
+        }
+
+        .contact-card span {
+            display: block;
+            color: var(--bbm-muted);
+            font-size: 12px;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .contact-actions button {
+            width: auto;
+            padding: 6px 9px;
+            border-radius: 9px;
+            font-size: 12px;
+        }
+
+        .rename-input {
+            margin-top: 8px;
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .chat-toolbar {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 180px 132px;
+            gap: 12px;
+            padding: 14px;
+            border-bottom: 1px solid var(--bbm-border);
+            background: var(--bbm-panel);
+        }
+
+        .chat-shell {
+            height: 626px;
+            overflow: auto;
+            padding: 18px;
+            background:
+                linear-gradient(var(--bbm-chat-overlay), var(--bbm-chat-overlay)),
+                repeating-linear-gradient(135deg, #dbe2ea 0, #dbe2ea 14px, #d1d9e2 14px, #d1d9e2 28px);
+        }
+
+        .empty {
+            display: grid;
+            place-items: center;
+            min-height: 460px;
+            color: var(--bbm-muted);
+            text-align: center;
+        }
+
+        .day-divider {
+            width: fit-content;
+            margin: 18px auto;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(31, 41, 51, 0.55);
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .message {
+            display: flex;
+            margin: 4px 0;
+        }
+
+        .message.outgoing {
+            justify-content: flex-end;
+        }
+
+        .message.group-start {
+            margin-top: 12px;
+        }
+
+        .bubble {
+            position: relative;
+            max-width: min(74%, 680px);
+            padding: 8px 12px 6px;
+            border-radius: 8px 16px 16px 8px;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(31, 41, 51, 0.12);
+            line-height: 1.42;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .outgoing .bubble {
+            border-radius: 16px 8px 8px 16px;
+            background: var(--bbm-green);
+        }
+
+        .group-start .bubble {
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .message:not(.group-start):not(.outgoing) .bubble {
+            border-top-left-radius: 8px;
+        }
+
+        .message:not(.group-start).outgoing .bubble {
+            border-top-right-radius: 8px;
+        }
+
+        .sender {
+            margin-bottom: 4px;
+            color: #315d89;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .time {
+            margin-top: 4px;
+            color: rgba(31, 41, 51, 0.58);
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .notice {
+            display: none;
+            margin: 0;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #fff4cc;
+            color: #725a00;
+            font-size: 13px;
+        }
+
+        .notice.show {
+            display: block;
+        }
+
+        @media (max-width: 880px) {
+            .hero,
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .phone {
+                min-height: auto;
+            }
+
+            .chat-toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-shell {
+                height: 620px;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .hero,
+            .sidebar,
+            .chat-toolbar {
+                display: none;
+            }
+
+            .page {
+                width: 100%;
+                padding: 0;
+            }
+
+            .workspace {
+                display: block;
+            }
+
+            .card,
+            .phone {
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background: #fff;
+            }
+
+            .chat-shell {
+                height: auto;
+                overflow: visible;
+                padding: 0;
+                background: #fff;
+            }
+
+            .bubble {
+                max-width: 82%;
+                box-shadow: none;
+                border: 1px solid #d6dde5;
+            }
+
+            .day-divider {
+                color: #222;
+                background: #eef2f6;
+            }
         }
     </style>
-    <title>Hello, world!</title>
 </head>
 <body>
-
-    <section id="img">
-        <div class="row">
-            <div class="col">
-                <img class="myimg" src="https://inteng-storage.s3.amazonaws.com/img/iea/9lwjAVnM6E/sizes/ocde_resize_md.jpg" alt="">
+    <main class="page">
+        <section class="hero">
+            <div class="card intro">
+                <p class="eyebrow">BlackBerry Messenger Backup Reader</p>
+                <h1>Beautify BBM Chat</h1>
+                <p>
+                    Load an exported BBM CSV backup and view it as a messenger-style conversation.
+                    The parser expects rows like timestamp, sender PIN, receiver PIN, and message text.
+                </p>
             </div>
-        </div>
-    </section>
 
-    <section id="content">
-        <div class="row">
-            <div class="col-8">
-                <h2>Judul Artikel</h2>
-                <p class="mb-3">Ditulis oleh blabla</p>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Exercitationem ex cupiditate deserunt recusandae eveniet fugiat culpa modi aut aperiam in amet officiis, commodi neque voluptatem ipsam asperiores minus molestias quibusdam.</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, quis magni sapiente accusamus sed sint veritatis incidunt eum dolores, laborum iure aspernatur ut obcaecati est ipsum quam aliquam dolor odio?</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, alias facilis reprehenderit doloremque at animi eaque voluptas nostrum id quibusdam, fugit aut totam necessitatibus? Architecto a quae impedit modi odit.</p>
-            </div>
-            <div class="col-4">
-                <h4>Tentang</h4>
-                <img src="" alt="">
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod sequi possimus quisquam cumque, vel incidunt deleniti, pariatur voluptatibus numquam nesciunt deserunt, fuga ipsam provident? Voluptate quisquam mollitia repellat accusantium facilis.</p>
-            </div>
-        </div>
-    </section>
-    
+            <div class="card controls">
+                <div class="control-group">
+                    <label for="fileInput">Upload BBM CSV backup</label>
+                    <input id="fileInput" type="file" accept=".csv,text/csv" multiple>
+                </div>
 
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-    
-    <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
-    -->
+                <div class="control-group">
+                    <label>Load example CSV</label>
+                    <div class="sample-grid" id="sampleButtons"></div>
+                </div>
+
+                <div class="button-row">
+                    <button class="primary" type="button" id="loadAllExamples">Load all examples</button>
+                    <button type="button" id="clearChat">Clear chat</button>
+                </div>
+
+                <div class="button-row">
+                    <button type="button" id="exportPdf">Export PDF</button>
+                    <button type="button" id="exportMarkdown">Export Markdown</button>
+                </div>
+
+                <p class="notice" id="notice"></p>
+            </div>
+        </section>
+
+        <section class="workspace">
+            <aside class="card sidebar">
+                <div class="bbm-header">
+                    <div class="bbm-logo">BBM</div>
+                    <div class="bbm-title">
+                        <strong id="conversationName">No chat loaded</strong>
+                        <span id="conversationMeta">Choose a CSV to begin</span>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <strong id="messageCount">0</strong>
+                        <span>messages</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="participantCount">0</strong>
+                        <span>participants</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="firstDate">-</strong>
+                        <span>first message</span>
+                    </div>
+                    <div class="stat">
+                        <strong id="lastDate">-</strong>
+                        <span>last message</span>
+                    </div>
+                </div>
+
+                <div class="daily-chart">
+                    <div class="daily-chart-header">
+                        <strong>Messages per day</strong>
+                        <span id="chartMeta">No data</span>
+                    </div>
+                    <div class="daily-bars" id="dailyBars">
+                        <span class="daily-empty">Load a backup to see activity.</span>
+                    </div>
+                </div>
+
+                <div class="contact-list" id="contactList"></div>
+            </aside>
+
+            <section class="card phone">
+                <div class="chat-toolbar">
+                    <input id="searchInput" type="search" placeholder="Search messages, PINs, or names">
+                    <select id="identitySelect" title="Choose which PIN appears as your outgoing messages">
+                        <option value="">Auto-detect my PIN</option>
+                    </select>
+                    <button type="button" id="themeToggle">Classic theme</button>
+                </div>
+
+                <div class="chat-shell" id="chatShell">
+                    <div class="empty">
+                        <div>
+                            <h2>Load a BBM backup</h2>
+                            <p>Use a CSV from `examples/` or upload your own backup file.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const state = {
+            messages: [],
+            participants: new Map(),
+            activePin: "all",
+            myPin: "",
+            sourceName: "",
+            sourceNames: [],
+            duplicateCount: 0,
+            aliases: loadAliases(),
+            editingPin: "",
+            theme: loadTheme()
+        };
+
+        const elements = {
+            fileInput: document.getElementById("fileInput"),
+            sampleButtons: document.getElementById("sampleButtons"),
+            loadAllExamples: document.getElementById("loadAllExamples"),
+            clearChat: document.getElementById("clearChat"),
+            exportPdf: document.getElementById("exportPdf"),
+            exportMarkdown: document.getElementById("exportMarkdown"),
+            notice: document.getElementById("notice"),
+            conversationName: document.getElementById("conversationName"),
+            conversationMeta: document.getElementById("conversationMeta"),
+            messageCount: document.getElementById("messageCount"),
+            participantCount: document.getElementById("participantCount"),
+            firstDate: document.getElementById("firstDate"),
+            lastDate: document.getElementById("lastDate"),
+            chartMeta: document.getElementById("chartMeta"),
+            dailyBars: document.getElementById("dailyBars"),
+            contactList: document.getElementById("contactList"),
+            searchInput: document.getElementById("searchInput"),
+            identitySelect: document.getElementById("identitySelect"),
+            themeToggle: document.getElementById("themeToggle"),
+            chatShell: document.getElementById("chatShell")
+        };
+
+        applyTheme();
+
+        function parseBbmRows(text) {
+            return text
+                .split(/\r?\n/)
+                .map((line) => line.trimEnd())
+                .filter(Boolean)
+                .map((line) => {
+                    if (line.startsWith("BlackBerry Messenger,")) {
+                        return line.split(",");
+                    }
+
+                    const firstComma = line.indexOf(",");
+                    const secondComma = line.indexOf(",", firstComma + 1);
+                    const thirdComma = line.indexOf(",", secondComma + 1);
+
+                    if (firstComma === -1 || secondComma === -1 || thirdComma === -1) {
+                        return [line];
+                    }
+
+                    return [
+                        line.slice(0, firstComma),
+                        line.slice(firstComma + 1, secondComma),
+                        line.slice(secondComma + 1, thirdComma),
+                        line.slice(thirdComma + 1)
+                    ];
+                });
+        }
+
+        function parseTimestamp(rawTimestamp) {
+            const trimmed = String(rawTimestamp || "").trim();
+            const datePart = trimmed.slice(0, 8);
+            const year = Number(datePart.slice(0, 4));
+            const month = Number(datePart.slice(4, 6)) - 1;
+            const day = Number(datePart.slice(6, 8));
+            const hasValidDatePrefix = /^\d{8}/.test(datePart)
+                && Number.isInteger(year)
+                && month >= 0
+                && month <= 11
+                && day >= 1
+                && day <= 31;
+
+            if (!hasValidDatePrefix) {
+                return null;
+            }
+
+            const epochPart = trimmed.slice(8);
+            const epoch = Number(epochPart);
+
+            if (Number.isFinite(epoch) && epochPart.length >= 13) {
+                const epochDate = new Date(epoch);
+                if (!Number.isNaN(epochDate.getTime())) {
+                    return new Date(
+                        year,
+                        month,
+                        day,
+                        epochDate.getHours(),
+                        epochDate.getMinutes(),
+                        epochDate.getSeconds(),
+                        epochDate.getMilliseconds()
+                    );
+                }
+            }
+
+            const date = new Date(year, month, day);
+            return Number.isNaN(date.getTime()) ? null : date;
+        }
+
+        function normalizeMessage(row, index, sourceName = "") {
+            if (row.length < 4 || row[0] === "BlackBerry Messenger") {
+                return null;
+            }
+
+            const timestamp = parseTimestamp(row[0]);
+            const sender = cleanPin(row[1]);
+            const receiver = cleanPin(row[2]);
+            const text = row.slice(3).join(",").trim();
+
+            if (!sender || !receiver || !text) {
+                return null;
+            }
+
+            return {
+                id: `${row[0]}-${index}-${sourceName}`,
+                rawIndex: index,
+                sourceName,
+                rawTimestamp: row[0],
+                timestamp,
+                sender,
+                receiver,
+                text
+            };
+        }
+
+        function cleanPin(value) {
+            return String(value || "").replace(/^"|"$/g, "").trim();
+        }
+
+        function extractDisplayName(text) {
+            const lastMarker = text.match(/^\(\+\)\s*(.+?)\s*[:：]\s*[0-9A-F]{8}\s+\*last/i);
+            if (lastMarker) {
+                return lastMarker[1].trim();
+            }
+
+            return "";
+        }
+
+        function buildParticipants(messages) {
+            const participants = new Map();
+
+            messages.forEach((message) => {
+                [message.sender, message.receiver].forEach((pin) => {
+                    if (!participants.has(pin)) {
+                        participants.set(pin, {
+                            pin,
+                            name: state.aliases[pin] || "",
+                            backupName: "",
+                            sent: 0,
+                            received: 0,
+                            total: 0
+                        });
+                    }
+                });
+
+                const sender = participants.get(message.sender);
+                const receiver = participants.get(message.receiver);
+                const displayName = extractDisplayName(message.text);
+
+                sender.sent += 1;
+                sender.total += 1;
+                receiver.received += 1;
+                receiver.total += 1;
+
+                if (displayName && !sender.backupName) {
+                    sender.backupName = displayName;
+                    if (!state.aliases[message.sender]) {
+                        sender.name = displayName;
+                    }
+                }
+            });
+
+            return participants;
+        }
+
+        function inferMyPin(participants) {
+            const sorted = [...participants.values()].sort((left, right) => right.sent - left.sent);
+            return sorted[0] ? sorted[0].pin : "";
+        }
+
+        function parseMessagesFromText(text, sourceName) {
+            return parseBbmRows(text)
+                .map((row, index) => normalizeMessage(row, index, sourceName))
+                .filter(Boolean);
+        }
+
+        function loadCsvText(text, sourceName) {
+            loadMessageSets([{ text, sourceName }]);
+        }
+
+        function loadMessageSets(sources) {
+            const parsedMessages = sources.flatMap((source) => parseMessagesFromText(source.text, source.sourceName));
+            const { messages, duplicateCount } = dedupeMessages(parsedMessages);
+
+            if (!messages.length) {
+                showNotice("No BBM messages were found in this backup.");
+                return;
+            }
+
+            state.messages = messages;
+            state.participants = buildParticipants(messages);
+            state.myPin = inferMyPin(state.participants);
+            state.activePin = "all";
+            state.sourceNames = sources.map((source) => source.sourceName);
+            state.sourceName = summarizeSources(state.sourceNames);
+            state.duplicateCount = duplicateCount;
+            state.editingPin = "";
+            elements.searchInput.value = "";
+
+            render();
+            showNotice(duplicateCount ? `Merged ${sources.length} backup files and removed ${duplicateCount.toLocaleString()} duplicate messages.` : "");
+        }
+
+        function dedupeMessages(messages) {
+            const seen = new Set();
+            const deduped = [];
+            let duplicateCount = 0;
+
+            messages.forEach((message) => {
+                const key = `${message.rawTimestamp}|${message.sender}|${message.receiver}|${message.text}`;
+                if (seen.has(key)) {
+                    duplicateCount += 1;
+                    return;
+                }
+                seen.add(key);
+                deduped.push(message);
+            });
+
+            deduped.sort((left, right) => {
+                if (!left.timestamp || !right.timestamp) {
+                    return 0;
+                }
+
+                return left.timestamp - right.timestamp || left.rawIndex - right.rawIndex;
+            });
+
+            return { messages: deduped, duplicateCount };
+        }
+
+        function summarizeSources(sourceNames) {
+            if (!sourceNames.length) {
+                return "";
+            }
+
+            if (sourceNames.length === 1) {
+                return sourceNames[0];
+            }
+
+            return `${sourceNames.length} merged backups`;
+        }
+
+        function render() {
+            renderStats();
+            renderIdentityOptions();
+            renderContacts();
+            renderMessages();
+        }
+
+        function renderStats() {
+            const messages = state.messages;
+            const first = messages[0];
+            const last = messages[messages.length - 1];
+            const participants = [...state.participants.values()];
+            const namedContact = participants.find((participant) => participant.name);
+
+            elements.conversationName.textContent = namedContact ? namedContact.name : state.sourceName || "BBM Chat";
+            elements.conversationMeta.textContent = state.sourceName
+                ? `${state.sourceName} · ${messages.length.toLocaleString()} messages${state.duplicateCount ? ` · ${state.duplicateCount.toLocaleString()} duplicates removed` : ""}`
+                : "CSV loaded";
+            elements.messageCount.textContent = messages.length.toLocaleString();
+            elements.participantCount.textContent = participants.length.toLocaleString();
+            elements.firstDate.textContent = first && first.timestamp ? formatShortDate(first.timestamp) : "-";
+            elements.lastDate.textContent = last && last.timestamp ? formatShortDate(last.timestamp) : "-";
+        }
+
+        function getVisibleMessages() {
+            const query = elements.searchInput.value.trim().toLowerCase();
+            let filtered = state.messages;
+
+            if (state.activePin !== "all") {
+                filtered = filtered.filter((message) => message.sender === state.activePin || message.receiver === state.activePin);
+            }
+
+            if (query) {
+                filtered = filtered.filter((message) => {
+                    const senderLabel = participantLabel(state.participants.get(message.sender));
+                    const receiverLabel = participantLabel(state.participants.get(message.receiver));
+                    const searchable = `${message.sender} ${message.receiver} ${senderLabel} ${receiverLabel} ${message.text}`.toLowerCase();
+                    return searchable.includes(query);
+                });
+            }
+
+            return filtered;
+        }
+
+        function renderIdentityOptions() {
+            const current = state.myPin;
+            elements.identitySelect.innerHTML = "";
+
+            [...state.participants.values()]
+                .sort((left, right) => right.sent - left.sent)
+                .forEach((participant) => {
+                    const option = document.createElement("option");
+                    option.value = participant.pin;
+                    option.textContent = `${participantLabel(participant)} as me`;
+                    elements.identitySelect.append(option);
+                });
+
+            elements.identitySelect.value = current;
+        }
+
+        function renderContacts() {
+            const participants = [...state.participants.values()].sort((left, right) => right.total - left.total);
+            elements.contactList.innerHTML = "";
+
+            const allButton = createContactButton({
+                pin: "all",
+                name: "All messages",
+                total: state.messages.length,
+                sent: 0,
+                received: 0
+            });
+            elements.contactList.append(allButton);
+
+            participants.forEach((participant) => {
+                elements.contactList.append(createContactButton(participant));
+            });
+        }
+
+        function createContactButton(participant) {
+            const button = document.createElement("div");
+            const isEditing = state.editingPin === participant.pin;
+            button.className = `contact-card${state.activePin === participant.pin ? " active" : ""}${isEditing ? " editing" : ""}`;
+            button.role = "button";
+            button.tabIndex = 0;
+            button.addEventListener("click", () => {
+                if (isEditing) {
+                    return;
+                }
+                state.activePin = participant.pin;
+                renderContacts();
+                renderMessages();
+            });
+            button.addEventListener("keydown", (event) => {
+                if ((event.key === "Enter" || event.key === " ") && !isEditing) {
+                    event.preventDefault();
+                    state.activePin = participant.pin;
+                    renderContacts();
+                    renderMessages();
+                }
+            });
+
+            const avatar = document.createElement("div");
+            avatar.className = "avatar";
+            avatar.textContent = participant.pin === "all" ? "#" : participantLabel(participant).slice(0, 1).toUpperCase();
+
+            const body = document.createElement("div");
+            const title = document.createElement("strong");
+            title.textContent = participant.pin === state.myPin && participant.pin !== "all"
+                ? `${participantLabel(participant)} (me)`
+                : participantLabel(participant);
+
+            const meta = document.createElement("span");
+            meta.textContent = participant.pin === "all"
+                ? "Full conversation"
+                : `${participant.pin} · ${participant.total.toLocaleString()} messages`;
+
+            body.append(title, meta);
+
+            if (participant.pin !== "all") {
+                if (isEditing) {
+                    body.append(createRenameForm(participant));
+                } else {
+                    const actions = document.createElement("div");
+                    actions.className = "contact-actions";
+
+                    const renameButton = document.createElement("button");
+                    renameButton.type = "button";
+                    renameButton.textContent = "Rename";
+                    renameButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        state.editingPin = participant.pin;
+                        renderContacts();
+                    });
+
+                    actions.append(renameButton);
+
+                    if (state.aliases[participant.pin]) {
+                        const resetButton = document.createElement("button");
+                        resetButton.type = "button";
+                        resetButton.textContent = "Reset";
+                        resetButton.addEventListener("click", (event) => {
+                            event.stopPropagation();
+                            delete state.aliases[participant.pin];
+                            participant.name = participant.backupName || "";
+                            saveAliases();
+                            render();
+                        });
+                        actions.append(resetButton);
+                    }
+
+                    body.append(actions);
+                }
+            }
+
+            button.append(avatar, body);
+            return button;
+        }
+
+        function createRenameForm(participant) {
+            const form = document.createElement("form");
+            form.addEventListener("click", (event) => event.stopPropagation());
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                const value = input.value.trim();
+
+                if (value) {
+                    state.aliases[participant.pin] = value;
+                    participant.name = value;
+                } else {
+                    delete state.aliases[participant.pin];
+                    participant.name = participant.backupName || "";
+                }
+
+                state.editingPin = "";
+                saveAliases();
+                render();
+            });
+
+            const input = document.createElement("input");
+            input.className = "rename-input";
+            input.type = "text";
+            input.placeholder = `Name for ${participant.pin}`;
+            input.value = state.aliases[participant.pin] || participant.backupName || "";
+
+            const actions = document.createElement("div");
+            actions.className = "contact-actions";
+
+            const saveButton = document.createElement("button");
+            saveButton.type = "submit";
+            saveButton.className = "primary";
+            saveButton.textContent = "Save";
+
+            const cancelButton = document.createElement("button");
+            cancelButton.type = "button";
+            cancelButton.textContent = "Cancel";
+            cancelButton.addEventListener("click", () => {
+                state.editingPin = "";
+                renderContacts();
+            });
+
+            actions.append(saveButton, cancelButton);
+            form.append(input, actions);
+
+            setTimeout(() => {
+                input.focus();
+                input.select();
+            }, 0);
+
+            return form;
+        }
+
+        function renderMessages() {
+            const fragment = document.createDocumentFragment();
+            let lastDay = "";
+            const filtered = getVisibleMessages();
+
+            elements.chatShell.innerHTML = "";
+            renderDailyChart(filtered);
+
+            if (!filtered.length) {
+                elements.chatShell.innerHTML = `<div class="empty"><div><h2>No messages found</h2><p>Try a different search or contact filter.</p></div></div>`;
+                return;
+            }
+
+            filtered.forEach((message) => {
+                const day = message.timestamp ? formatLongDate(message.timestamp) : "Unknown date";
+
+                if (day !== lastDay) {
+                    const divider = document.createElement("div");
+                    divider.className = "day-divider";
+                    divider.id = `day-${dayKey(message.timestamp)}`;
+                    divider.textContent = day;
+                    fragment.append(divider);
+                    lastDay = day;
+                }
+
+                const previousMessage = getPreviousVisibleMessage(filtered, message);
+                fragment.append(createMessageElement(message, previousMessage));
+            });
+
+            elements.chatShell.append(fragment);
+        }
+
+        function renderDailyChart(messages) {
+            elements.dailyBars.innerHTML = "";
+
+            if (!messages.length) {
+                elements.chartMeta.textContent = "No data";
+                elements.dailyBars.innerHTML = '<span class="daily-empty">No matching messages.</span>';
+                return;
+            }
+
+            const counts = new Map();
+            messages.forEach((message) => {
+                if (!message.timestamp) {
+                    return;
+                }
+
+                const key = dayKey(message.timestamp);
+                counts.set(key, (counts.get(key) || 0) + 1);
+            });
+
+            const days = [...counts.entries()].sort(([left], [right]) => left.localeCompare(right));
+            if (!days.length) {
+                elements.chartMeta.textContent = "No dated messages";
+                elements.dailyBars.innerHTML = '<span class="daily-empty">No dated messages.</span>';
+                return;
+            }
+
+            const maxCount = Math.max(...days.map(([, count]) => count));
+            elements.chartMeta.textContent = `${days.length.toLocaleString()} days · peak ${maxCount.toLocaleString()}`;
+
+            const fragment = document.createDocumentFragment();
+            days.forEach(([key, count]) => {
+                const bar = document.createElement("button");
+                const height = Math.max(8, Math.round((count / maxCount) * 100));
+                bar.type = "button";
+                bar.className = "daily-bar";
+                bar.style.height = `${height}%`;
+                bar.title = `${formatChartDate(key)}: ${count.toLocaleString()} messages`;
+                bar.dataset.day = key;
+                bar.setAttribute("aria-label", bar.title);
+                bar.addEventListener("click", () => scrollToDay(key));
+                fragment.append(bar);
+            });
+
+            elements.dailyBars.append(fragment);
+        }
+
+        function scrollToDay(key) {
+            const target = document.getElementById(`day-${key}`);
+            if (!target) {
+                return;
+            }
+
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+            elements.dailyBars.querySelectorAll(".daily-bar.active").forEach((bar) => {
+                bar.classList.remove("active");
+            });
+
+            const activeBar = elements.dailyBars.querySelector(`[data-day="${key}"]`);
+            if (activeBar) {
+                activeBar.classList.add("active");
+            }
+        }
+
+        function getPreviousVisibleMessage(messages, currentMessage) {
+            const index = messages.indexOf(currentMessage);
+            return index > 0 ? messages[index - 1] : null;
+        }
+
+        function shouldGroupMessage(message, previousMessage) {
+            if (!previousMessage || previousMessage.sender !== message.sender) {
+                return false;
+            }
+
+            if (!previousMessage.timestamp || !message.timestamp) {
+                return false;
+            }
+
+            const sameDay = formatLongDate(previousMessage.timestamp) === formatLongDate(message.timestamp);
+            const withinFiveMinutes = message.timestamp - previousMessage.timestamp <= 5 * 60 * 1000;
+            return sameDay && withinFiveMinutes;
+        }
+
+        function createMessageElement(message, previousMessage) {
+            const wrapper = document.createElement("div");
+            const isOutgoing = message.sender === state.myPin;
+            const isGrouped = shouldGroupMessage(message, previousMessage);
+            wrapper.className = `message${isOutgoing ? " outgoing" : ""}${isGrouped ? "" : " group-start"}`;
+
+            const bubble = document.createElement("div");
+            bubble.className = "bubble";
+
+            if (!isOutgoing && !isGrouped) {
+                const sender = document.createElement("div");
+                sender.className = "sender";
+                sender.textContent = participantLabel(state.participants.get(message.sender));
+                bubble.append(sender);
+            }
+
+            const body = document.createElement("div");
+            body.textContent = message.text;
+
+            const time = document.createElement("div");
+            time.className = "time";
+            time.textContent = message.timestamp ? formatTime(message.timestamp) : message.rawTimestamp;
+
+            bubble.append(body, time);
+            wrapper.append(bubble);
+            return wrapper;
+        }
+
+        function participantLabel(participant) {
+            if (!participant) {
+                return "Unknown";
+            }
+
+            return participant.name || participant.pin;
+        }
+
+        function loadAliases() {
+            try {
+                return JSON.parse(localStorage.getItem("bbmPinAliases") || "{}");
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function saveAliases() {
+            localStorage.setItem("bbmPinAliases", JSON.stringify(state.aliases));
+        }
+
+        function loadTheme() {
+            return localStorage.getItem("bbmTheme") || "modern";
+        }
+
+        function saveTheme() {
+            localStorage.setItem("bbmTheme", state.theme);
+        }
+
+        function applyTheme() {
+            document.body.classList.toggle("theme-classic", state.theme === "classic");
+            elements.themeToggle.textContent = state.theme === "classic" ? "Modern theme" : "Classic theme";
+        }
+
+        function clearChat() {
+            state.messages = [];
+            state.participants = new Map();
+            state.activePin = "all";
+            state.myPin = "";
+            state.sourceName = "";
+            state.sourceNames = [];
+            state.duplicateCount = 0;
+            state.editingPin = "";
+            elements.searchInput.value = "";
+            elements.identitySelect.innerHTML = '<option value="">Auto-detect my PIN</option>';
+            elements.conversationName.textContent = "No chat loaded";
+            elements.conversationMeta.textContent = "Choose a CSV to begin";
+            elements.messageCount.textContent = "0";
+            elements.participantCount.textContent = "0";
+            elements.firstDate.textContent = "-";
+            elements.lastDate.textContent = "-";
+            elements.chartMeta.textContent = "No data";
+            elements.dailyBars.innerHTML = '<span class="daily-empty">Load a backup to see activity.</span>';
+            elements.contactList.innerHTML = "";
+            elements.chatShell.innerHTML = '<div class="empty"><div><h2>Load a BBM backup</h2><p>Use a CSV from `examples/` or upload your own backup file.</p></div></div>';
+            showNotice("");
+        }
+
+        function formatShortDate(date) {
+            return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "2-digit" });
+        }
+
+        function formatLongDate(date) {
+            return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        }
+
+        function dayKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        function formatChartDate(key) {
+            const [year, month, day] = key.split("-").map(Number);
+            return formatShortDate(new Date(year, month - 1, day));
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+        }
+
+        function showNotice(message) {
+            elements.notice.textContent = message;
+            elements.notice.classList.toggle("show", Boolean(message));
+        }
+
+        function exportPdf() {
+            if (!state.messages.length) {
+                showNotice("Load a BBM backup before exporting to PDF.");
+                return;
+            }
+
+            window.print();
+        }
+
+        function exportMarkdown() {
+            const messages = getVisibleMessages();
+
+            if (!messages.length) {
+                showNotice("No visible messages to export. Load a backup or clear filters first.");
+                return;
+            }
+
+            downloadText(buildMarkdown(messages), `${safeFileName(state.sourceName || "bbm-chat")}.md`, "text/markdown;charset=utf-8");
+            showNotice(`Exported ${messages.length.toLocaleString()} visible messages to Markdown.`);
+        }
+
+        function buildMarkdown(messages) {
+            const lines = [];
+            const participants = [...state.participants.values()]
+                .sort((left, right) => participantLabel(left).localeCompare(participantLabel(right)));
+            let lastDay = "";
+
+            lines.push(`# BBM Chat Export`);
+            lines.push("");
+            lines.push(`- Source: ${state.sourceName || "Uploaded BBM backup"}`);
+            lines.push(`- Exported: ${new Date().toISOString()}`);
+            lines.push(`- Messages: ${messages.length.toLocaleString()}`);
+            lines.push(`- Participants: ${participants.length.toLocaleString()}`);
+            if (state.duplicateCount) {
+                lines.push(`- Duplicates removed during merge: ${state.duplicateCount.toLocaleString()}`);
+            }
+            lines.push("");
+            lines.push(`## Participants`);
+            lines.push("");
+
+            participants.forEach((participant) => {
+                const label = participantLabel(participant);
+                const me = participant.pin === state.myPin ? " _(me)_" : "";
+                lines.push(`- ${escapeMarkdown(label)}${me}: \`${participant.pin}\``);
+            });
+
+            lines.push("");
+            lines.push(`## Messages`);
+            lines.push("");
+
+            messages.forEach((message) => {
+                const day = message.timestamp ? formatLongDate(message.timestamp) : "Unknown date";
+                if (day !== lastDay) {
+                    lines.push(`### ${escapeMarkdown(day)}`);
+                    lines.push("");
+                    lastDay = day;
+                }
+
+                const time = message.timestamp ? formatTime(message.timestamp) : message.rawTimestamp;
+                const sender = participantLabel(state.participants.get(message.sender));
+                lines.push(`- **${escapeMarkdown(time)} — ${escapeMarkdown(sender)}** (\`${message.sender}\`): ${formatMarkdownMessage(message.text)}`);
+            });
+
+            lines.push("");
+            return lines.join("\n");
+        }
+
+        function formatMarkdownMessage(text) {
+            const escaped = escapeMarkdown(text);
+            return escaped.includes("\n") ? `\n\n  ${escaped.replace(/\n/g, "\n  ")}` : escaped;
+        }
+
+        function escapeMarkdown(value) {
+            return String(value)
+                .replace(/\\/g, "\\\\")
+                .replace(/`/g, "\\`")
+                .replace(/\*/g, "\\*")
+                .replace(/_/g, "\\_")
+                .replace(/\[/g, "\\[")
+                .replace(/\]/g, "\\]")
+                .replace(/#/g, "\\#");
+        }
+
+        function downloadText(content, fileName, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = fileName;
+            document.body.append(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function safeFileName(value) {
+            return String(value)
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "")
+                .slice(0, 80) || "bbm-chat";
+        }
+
+        async function readFiles(files) {
+            const fileList = [...files];
+            if (!fileList.length) {
+                return;
+            }
+
+            const chunks = await Promise.all(fileList.map((file) => file.text()));
+            loadCsvText(chunks.join("\n"), fileList.map((file) => file.name).join(", "));
+        }
+
+        async function loadExample(number) {
+            try {
+                const response = await fetch(`examples/${number}.csv`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                loadCsvText(await response.text(), `examples/${number}.csv`);
+            } catch (error) {
+                showNotice("Example files cannot be loaded from this browser context. Upload the CSV manually or serve this folder with a local web server.");
+            }
+        }
+
+        async function loadAllExamples() {
+            try {
+                const sources = await Promise.all(
+                    [1, 2, 3, 4, 5].map(async (number) => {
+                        const sourceName = `examples/${number}.csv`;
+                        const response = await fetch(sourceName);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+
+                        return {
+                            sourceName,
+                            text: await response.text()
+                        };
+                    })
+                );
+
+                loadMessageSets(sources);
+            } catch (error) {
+                showNotice("Example files cannot be loaded from this browser context. Upload all CSV files together or serve this folder with a local web server.");
+            }
+        }
+
+        for (let index = 1; index <= 5; index += 1) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = `${index}.csv`;
+            button.addEventListener("click", () => loadExample(index));
+            elements.sampleButtons.append(button);
+        }
+
+        elements.fileInput.addEventListener("change", (event) => readFiles(event.target.files));
+        elements.loadAllExamples.addEventListener("click", loadAllExamples);
+        elements.clearChat.addEventListener("click", clearChat);
+        elements.exportPdf.addEventListener("click", exportPdf);
+        elements.exportMarkdown.addEventListener("click", exportMarkdown);
+        elements.themeToggle.addEventListener("click", () => {
+            state.theme = state.theme === "classic" ? "modern" : "classic";
+            saveTheme();
+            applyTheme();
+        });
+        elements.searchInput.addEventListener("input", renderMessages);
+        elements.identitySelect.addEventListener("change", (event) => {
+            state.myPin = event.target.value;
+            renderContacts();
+            renderMessages();
+        });
+    </script>
 </body>
 </html>
